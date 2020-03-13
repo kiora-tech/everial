@@ -9,6 +9,7 @@ use Symfony\Component\Mime\Part\DataPart;
 use Symfony\Component\Mime\Part\Multipart\FormDataPart;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
@@ -54,7 +55,8 @@ class EverialClient
     }
 
     /**
-     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     * @return ResponseInterface
+     * @throws TransportExceptionInterface
      */
     public function auth(): ResponseInterface
     {
@@ -76,53 +78,62 @@ class EverialClient
      * @param \SplFileObject $file
      * @return ResponseInterface
      * @throws AuthException
-     * @throws \Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface
+     * @throws TransportExceptionInterface
      */
     public function serialize(\SplFileObject $file): ResponseInterface
     {
-        try {
-            $accessToken = $this->auth()->toArray()['access_token'] ?? null;
-        } catch (HttpExceptionInterface|DecodingExceptionInterface $exception) {
-            throw new AuthException('A problem with auth', 0, $exception);
-        }
+        return $this->callWithFile($file, static::SERIALIZE_URL);
+    }
 
+    /**
+     * @param \SplFileObject $file
+     * @return ResponseInterface
+     * @throws AuthException
+     * @throws TransportExceptionInterface
+     */
+    public function reconize(\SplFileObject $file): ResponseInterface
+    {
+        return $this->callWithFile($file, static::RECOGNIZE_URL);
+    }
 
+    /**
+     * Base call
+     * @param \SplFileObject $file
+     * @param string $path
+     * @return ResponseInterface
+     * @throws AuthException
+     * @throws TransportExceptionInterface
+     */
+    private function callWithFile(\SplFileObject $file, string $path): ResponseInterface
+    {
         $formFields = [
             'file' => DataPart::fromPath($file->getRealPath()),
         ];
 
         $formData = new FormDataPart($formFields);
         $headers = $formData->getPreparedHeaders()->toArray();
-        $headers[] = 'Authorization: Bearer ' . $accessToken;
+        $headers[] = 'Authorization: Bearer ' . $this->getAccessToken();
 
-        return $this->client->request('POST', $this->everialBasePath . static::SERIALIZE_URL, [
+        return $this->client->request('POST', $this->everialBasePath . $path, [
                 'headers' => $headers,
                 'body' => $formData->bodyToIterable()
             ]
         );
     }
 
-    public function reconize(\SplFileObject $file): ResponseInterface
+    /**
+     * Get the access token
+     *
+     * @return string
+     * @throws AuthException
+     * @throws TransportExceptionInterface
+     */
+    private function getAccessToken(): ?string
     {
         try {
-            $accessToken = $this->auth()->toArray()['access_token'] ?? null;
+            return $this->auth()->toArray()['access_token'] ?? null;
         } catch (HttpExceptionInterface|DecodingExceptionInterface $exception) {
             throw new AuthException('A problem with auth', 0, $exception);
         }
-
-
-        $formFields = [
-            'file' => DataPart::fromPath($file->getRealPath()),
-        ];
-
-        $formData = new FormDataPart($formFields);
-        $headers = $formData->getPreparedHeaders()->toArray();
-        $headers[] = 'Authorization: Bearer ' . $accessToken;
-
-        return $this->client->request('POST', $this->everialBasePath . static::RECOGNIZE_URL, [
-                'headers' => $headers,
-                'body' => $formData->bodyToIterable()
-            ]
-        );
     }
 }
