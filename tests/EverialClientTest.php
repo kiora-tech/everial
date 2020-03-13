@@ -56,6 +56,9 @@ class EverialClientTest extends TestCase
         $this->assertInstanceOf(ResponseInterface::class, $client->serialize(new \SplFileObject(__FILE__)));
     }
 
+    /**
+     * @group fonctional
+     */
     public function testAuthWithLogin()
     {
         $client = $this->createEverialClient(new CurlHttpClient(), getenv('EVERIAL_USERNAME'),
@@ -66,6 +69,9 @@ class EverialClientTest extends TestCase
         $this->assertArrayHasKey('access_token', $response->toArray());
     }
 
+    /**
+     * @group fonctional
+     */
     public function testAuthWithWrongLogin()
     {
         $client = $this->createEverialClient(new CurlHttpClient(), 'foo', 'bar');
@@ -76,6 +82,9 @@ class EverialClientTest extends TestCase
         $this->assertArrayHasKey('access_token', $responce->toArray());
     }
 
+    /**
+     * @group fonctional
+     */
     public function testSerializeWithFile()
     {
         $client = $this->createEverialClient(new CurlHttpClient(), getenv('EVERIAL_USERNAME'),
@@ -85,6 +94,9 @@ class EverialClientTest extends TestCase
         $this->assertArrayHasKey('status', $response->toArray());
     }
 
+    /**
+     * @group fonctional
+     */
     public function testReconizeWithFile()
     {
         $client = $this->createEverialClient(new CurlHttpClient(), getenv('EVERIAL_USERNAME'),

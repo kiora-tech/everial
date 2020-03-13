@@ -1,0 +1,9 @@
+language: php
+
+php:
+  - 7.3
+  - 7.4
+
+install: travis_retry composer install --no-interaction --prefer-source
+
+script: ./vendor/bin/phpunit --coverage-text  --exclude-group=fonctional
