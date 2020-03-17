@@ -13,8 +13,17 @@ use Symfony\Component\HttpClient\Exception\ServerException;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
+/**
+ * @coversDefaultClass \Kiora\EverialClient
+ * @covers \Kiora\EverialClient::__construct
+ * @covers \Kiora\EverialClient::auth
+ * @covers \Kiora\EverialClient::getAccessToken
+ */
 class EverialClientTest extends TestCase
 {
+    /**
+     * @covers ::auth
+     */
     public function testAuth()
     {
         $httpClient = $this->createClientMock(1);
@@ -24,6 +33,10 @@ class EverialClientTest extends TestCase
         $this->assertInstanceOf(ResponseInterface::class, $client->auth());
     }
 
+    /**
+     * @covers ::serialize
+     * @covers ::callWithFile
+     */
     public function testSerialize()
     {
         $httpClient = $this->createClientMock(2);
@@ -33,6 +46,10 @@ class EverialClientTest extends TestCase
         $this->assertInstanceOf(ResponseInterface::class, $client->serialize(new \SplFileObject(__FILE__)));
     }
 
+    /**
+     * @covers ::reconize
+     * @covers ::callWithFile
+     */
     public function testReconize()
     {
         $httpClient = $this->createClientMock(2);
@@ -42,6 +59,10 @@ class EverialClientTest extends TestCase
         $this->assertInstanceOf(ResponseInterface::class, $client->reconize(new \SplFileObject(__FILE__)));
     }
 
+    /**
+     * @covers ::serialize
+     * @covers ::callWithFile
+     */
     public function testSerializeFaildByAuht()
     {
         $response = $this->createResponseMock();
@@ -57,6 +78,7 @@ class EverialClientTest extends TestCase
     }
 
     /**
+     * @covers ::auth
      * @group fonctional
      */
     public function testAuthWithLogin()
@@ -70,6 +92,7 @@ class EverialClientTest extends TestCase
     }
 
     /**
+     * @covers ::auth
      * @group fonctional
      */
     public function testAuthWithWrongLogin()
@@ -83,6 +106,8 @@ class EverialClientTest extends TestCase
     }
 
     /**
+     * @covers ::serialize
+     * @covers ::callWithFile
      * @group fonctional
      */
     public function testSerializeWithFile()
@@ -95,6 +120,8 @@ class EverialClientTest extends TestCase
     }
 
     /**
+     * @covers ::reconize
+     * @covers ::callWithFile
      * @group fonctional
      */
     public function testReconizeWithFile()
