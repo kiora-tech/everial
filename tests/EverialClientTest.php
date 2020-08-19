@@ -47,16 +47,16 @@ class EverialClientTest extends TestCase
     }
 
     /**
-     * @covers ::reconize
+     * @covers ::recognize
      * @covers ::callWithFile
      */
-    public function testReconize()
+    public function testRecognize()
     {
         $httpClient = $this->createClientMock(2);
 
         $client = $this->createEverialClient($httpClient);
 
-        $this->assertInstanceOf(ResponseInterface::class, $client->reconize(new \SplFileObject(__FILE__)));
+        $this->assertInstanceOf(ResponseInterface::class, $client->recognize(new \SplFileObject(__FILE__)));
     }
 
     /**
@@ -120,15 +120,15 @@ class EverialClientTest extends TestCase
     }
 
     /**
-     * @covers ::reconize
+     * @covers ::recognize
      * @covers ::callWithFile
      * @group fonctional
      */
-    public function testReconizeWithFile()
+    public function testRecognizeWithFile()
     {
         $client = $this->createEverialClient(new CurlHttpClient(), getenv('EVERIAL_USERNAME'),
             getenv('EVERIAL_PASSWORD'));
-        $response = $client->reconize(new \SplFileObject(__DIR__ . '/Resources/ID.jpeg'));
+        $response = $client->recognize(new \SplFileObject(__DIR__ . '/Resources/ID.jpeg'));
         $this->assertInstanceOf(ResponseInterface::class, $response);
         $this->assertArrayHasKey('radId', $response->toArray());
     }

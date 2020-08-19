@@ -91,7 +91,7 @@ class EverialClient
      * @throws AuthException
      * @throws TransportExceptionInterface
      */
-    public function reconize(\SplFileObject $file): ResponseInterface
+    public function recognize(\SplFileObject $file): ResponseInterface
     {
         return $this->callWithFile($file, static::RECOGNIZE_URL);
     }
