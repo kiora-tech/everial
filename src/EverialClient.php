@@ -91,7 +91,7 @@ class EverialClient
      * @throws AuthException
      * @throws TransportExceptionInterface
      */
-    public function reconize(\SplFileObject $file): ResponseInterface
+    public function recognize(\SplFileObject $file): ResponseInterface
     {
         return $this->callWithFile($file, static::RECOGNIZE_URL);
     }
@@ -106,8 +106,10 @@ class EverialClient
      */
     private function callWithFile(\SplFileObject $file, string $path): ResponseInterface
     {
+        $finfo = new \finfo(FILEINFO_MIME_TYPE); 
+        $mimeType = $finfo->file($file->getRealPath());
         $formFields = [
-            'file' => DataPart::fromPath($file->getRealPath()),
+            'file' => DataPart::fromPath($file->getRealPath(), null, $mimeType),
         ];
 
         $formData = new FormDataPart($formFields);
