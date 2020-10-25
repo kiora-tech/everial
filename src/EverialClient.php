@@ -84,7 +84,7 @@ class EverialClient implements EverialClientInterface
 
     public function analyse(\SplFileObject $file, string $radId, string $dbId): ResponseInterface
     {
-        return $this->callWithFile($file, static::RECOGNIZE_URL, compact('radId', 'dbId'));
+        return $this->callWithFile($file, static::ANALYSE_URL, compact('radId', 'dbId'));
     }
 
     /**
