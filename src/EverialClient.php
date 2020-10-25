@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Kiora;
-
 
 use Kiora\Exception\AuthException;
 use Symfony\Component\Mime\Part\DataPart;
@@ -20,7 +18,7 @@ class EverialClient implements EverialClientInterface
     private const RECOGNIZE_URL = '/api/v1/recognize';
     private const ANALYSE_URL = '/api/v1/analyze';
 
-    private string $client;
+    private HttpClientInterface $client;
     private string $everialAuthBasePath;
     private string $everialUsername;
     private string $everialPassword;
